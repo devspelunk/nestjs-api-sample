@@ -45,6 +45,7 @@ services:
     volumes:
       # Seed sample data
       - ./database/seed.js:/docker-entrypoint-initdb.d/seed.js
+    restart: unless-stopped
     # Health check here so that compose will wait for a healthy mongo before it starts nestjs
     healthcheck:
       test: "[ `echo 'db.runCommand(\"ping\").ok' | mongo localhost/example-database --quiet` ] && echo 0 || echo 1"
