@@ -28,6 +28,8 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+      redis:
+        condition: service_healthy
   
   mongo:
     container_name: nestjs_mongo
@@ -50,6 +52,21 @@ services:
       start_period: 10s
       timeout: 4s
       retries: 3
+  
+  redis:
+    container_name: nestjs_redis
+    image: redis:6.2.7
+    restart: unless-stopped
+    # Health check here so that compose will wait for a healthy redis before it starts nestjs
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    expose:
+        - "6379"
+    networks:
+        - api-network
 
 networks:
   api-network:
