@@ -1,0 +1,23 @@
+services:
+  nest-dev-api:
+    container_name: nestjs_dev
+    image: mlemus117/nestjs-api-dev:latest
+    build:
+      context: .
+      target: development
+      dockerfile: ./nestjs.Dockerfile
+      args: 
+        - NODE_ENV=development
+    command: npm run start:debug
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    networks:
+      - api-network
+    volumes:
+      - ./nestjs-api:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+networks:
+  api-network:
