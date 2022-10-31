@@ -15,8 +15,13 @@ services:
     networks:
       - api-network
     volumes:
-      - ./nestjs-api:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./nestjs-api:/opt/node_app/app
+      # Mounting package files so that updates will save on container and local. Will be available on next build:
+      # docker compose exec -w /opt/node_app node npm install --save package
+      - ./nestjs-api/package.json:/opt/node_app/package.json
+      - ./nestjs-api/package-lock.json:/opt/node_app/package-lock.json
+      # Workaround to prevent host node_modules from being mounted so that we an run local lint/tests
+      - notused:/opt/node_app/app/node_modules
     restart: unless-stopped
     environment:
       - NODE_ENV=development
@@ -71,3 +76,6 @@ services:
 
 networks:
   api-network:
+
+volumes:
+  notused:
